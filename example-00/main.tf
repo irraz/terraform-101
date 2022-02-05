@@ -5,14 +5,21 @@ provider "google" {
     project = "thinking-pagoda-340412"
 }
 
+resource "random_string" "number" {
+  length  = 3
+  upper   = false
+  lower   = false
+  number  = true
+  special = false
+}
 
 resource "google_storage_bucket" "tf-state" {
-  name          = "terraform-101-state-${random_id.instance_id.hex}"
+  name          = "terraform-101-state-${random_string.number.result}"
   location      = "EU"
   force_destroy = false
 # Es recomendable activar el versioning para los state files para poder hacer roll-back a una versión anterior.
-  versioning {
-    enable = true
-  }
   uniform_bucket_level_access = true
+  versioning {
+    enabled = true
+  }
 }
