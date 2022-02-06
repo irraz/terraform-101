@@ -5,16 +5,7 @@ provider "google" {
     project = "thinking-pagoda-340412"
 }
 
-resource "random_string" "number" {
-  length  = 3
-  upper   = false
-  lower   = false
-  number  = true
-  special = false
-}
-
 resource "google_storage_bucket" "tf-state" {
-  #name          = "terraform-101-state-${random_string.number.result}"
   name          = "terraform-101-state-183"
   location      = "EU"
   force_destroy = false
