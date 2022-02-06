@@ -1,8 +1,3 @@
-output "google_storage_bucket" {
-  description = "Bucket used for storing terraform state"
-  value       = "${google_storage_bucket.tf-state.name}"
-}
-
 output "google_compute_instance" {
   description = "compute instance name"
   value       = "${google_compute_instance.default.name}"
