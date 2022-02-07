@@ -2,7 +2,7 @@
 #terraform {
 #  backend "gcs" {
 #    #Sustituir el nombre del bucket creado en el main.tf previamente
-#    bucket = "terraform-101-state-183"
+#    bucket = "{ NOMBRE_BUCKET }"
 #    prefix = "terraform/state/example-00/"
 #  }
 #}

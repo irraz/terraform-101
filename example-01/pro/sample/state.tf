@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "terraform-101-state-183"
+    bucket = "{ NOMBRE_BUCKET }"
     prefix = "terraform/state/example-01/pro/sample/"
   }
 }
