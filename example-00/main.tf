@@ -1,17 +1,16 @@
-provider "google" {
-  region = "europe-west1"
-  zone   = "europe-west1-c"
-  #Sustituye por el project id por el que corresponda en tu caso.
-  project = "thinking-pagoda-340412"
-}
+# Descomentar una vez el storage este creado para configurar el remote state.
+##Este ejemplo crea una instancia de VM con Debian 9 de tamaño f1-micro en europe-west1-c 
 
-resource "google_storage_bucket" "tf-state" {
-  name          = "terraform-101-state-183"
-  location      = "EU"
-  force_destroy = false
-  # Es recomendable activar el versioning para los state files para poder hacer roll-back a una versión anterior.
-  uniform_bucket_level_access = true
-  versioning {
-    enabled = true
+resource "google_compute_instance" "default" {
+  name         = "instance-vm-01"
+  machine_type = "f1-micro"
+  zone         = "europe-west1-c"
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-9"
+    }
+  }
+  network_interface {
+    network = "default"
   }
 }
