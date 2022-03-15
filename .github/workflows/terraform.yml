@@ -10,7 +10,7 @@ on:
 jobs:
   terraform:
     name: 'Terraform'
-    runs-on: [self-hosted, decathlon]
+    runs-on: [ubuntu-latest]
     environment: develop
     timeout-minutes: 10
     defaults:
