@@ -48,7 +48,7 @@ jobs:
         run: |
           set -euxo pipefail
           terraform --version
-          TF_MODULES_DIR=$(find "${GITHUB_WORKSPACE}/example-01/modules"  -type f -name 'main.tf' -print0 | xargs -0 -L1 dirname)
+          TF_MODULES_DIR=$(find "${GITHUB_WORKSPACE}/"  -type f -name 'main.tf' -print0 | xargs -0 -L1 dirname)
           for MODULE_DIR in ${TF_MODULES_DIR}; do
             pushd "${MODULE_DIR}" || exit
             echo "Module: $(basename "${MODULE_DIR}")"
