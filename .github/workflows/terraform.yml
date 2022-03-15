@@ -52,8 +52,8 @@ jobs:
           for MODULE_DIR in ${TF_MODULES_DIR}; do
             pushd "${MODULE_DIR}" || exit
             echo "Module: $(basename "${MODULE_DIR}")"
-            #echo "Action: INIT"
-            #terraform init
+            echo "Action: INIT"
+            terraform init -backend=false
             echo "Action: CHECK SYNTAX"
             terraform fmt -check
             echo "Action: VALIDATE"
