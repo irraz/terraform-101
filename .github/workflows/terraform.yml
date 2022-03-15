@@ -53,7 +53,7 @@ jobs:
             pushd "${MODULE_DIR}" || exit
             echo "Module: $(basename "${MODULE_DIR}")"
             echo "Action: INIT"
-            terraform init
+            terraform init -backend=false
             echo "Action: CHECK SYNTAX"
             terraform fmt -check
             echo "Action: VALIDATE"
