@@ -1,0 +1,68 @@
+---
+name: 'Terraform'
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: [self-hosted, decathlon]
+    environment: develop
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    env:
+      TERRAFORM_VERSION: '~1.1.0'
+    steps:
+      # Checkout that allows the step render terraform docs to work properly on non main or develop branch
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+        if: ${{ ! startsWith(github.ref, 'refs/heads/main') && ! startsWith(github.ref, 'refs/heads/develop') }}
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+        if: ${{ startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/develop') }}
+
+      - name: Render terraform docs inside the README.md and push changes back to PR branch
+        uses: terraform-docs/gh-actions@v0.6.0
+        if: ${{ ! startsWith(github.ref, 'refs/heads/main') && ! startsWith(github.ref, 'refs/heads/develop') }}
+        with:
+          find-dir: modules
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
+
+      - name: 'Setup Terraform'
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: 'Init and check Terraform modules'
+        run: |
+          set -euxo pipefail
+          terraform --version
+          TF_MODULES_DIR=$(find "${GITHUB_WORKSPACE}/modules" -type f -name 'main.tf' -print0 | xargs -0 -L1 dirname)
+          for MODULE_DIR in ${TF_MODULES_DIR}; do
+            pushd "${MODULE_DIR}" || exit
+            echo "Module: $(basename "${MODULE_DIR}")"
+            echo "Action: INIT"
+            terraform init
+            echo "Action: CHECK SYNTAX"
+            terraform fmt -check
+            echo "Action: VALIDATE"
+            terraform validate
+            popd || exit
+          done
+      - name: clean
+        uses: docker://centos
+        if: ${{ always() }}
+        continue-on-error: true
+        with:
+          args: "/bin/rm /github/workspace -rf"
